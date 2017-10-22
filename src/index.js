@@ -76,6 +76,17 @@ SignerProvider.prototype.sendAsync = function (payload, callback) { // eslint-di
               params: [signedHexPayload],
             });
 
+            if (self.options.shouldConfirm && self.options.shouldConfirm(rawTxPayload)) {
+              return callback(null, {
+                jsonrpc: '2.0',
+                id: 1,
+                result: {
+                  raw: rawTxPayload,
+                  sign: signedHexPayload,
+                },
+              });
+            }
+
             // send payload
             self.provider.sendAsync(outputPayload, callback);
           } else {
